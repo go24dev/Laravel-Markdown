@@ -13,21 +13,22 @@ declare(strict_types=1);
 
 namespace GrahamCampbell\Markdown;
 
-use GrahamCampbell\Markdown\View\Compiler\MarkdownCompiler;
-use GrahamCampbell\Markdown\View\Directive\MarkdownDirective;
-use GrahamCampbell\Markdown\View\Engine\BladeMarkdownEngine;
-use GrahamCampbell\Markdown\View\Engine\PhpMarkdownEngine;
-use Illuminate\Contracts\Container\Container;
-use Illuminate\Foundation\Application as LaravelApplication;
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\View\Engines\CompilerEngine;
-use Laravel\Lumen\Application as LumenApplication;
-use League\CommonMark\CommonMarkConverter;
-use League\CommonMark\ConfigurableEnvironmentInterface;
-use League\CommonMark\Environment;
-use League\CommonMark\EnvironmentInterface;
 use League\CommonMark\ConverterInterface;
+use League\CommonMark\CommonMarkConverter;
+use Illuminate\View\Engines\CompilerEngine;
+use Illuminate\Contracts\Container\Container;
+use League\CommonMark\Environment\Environment;
+use Laravel\Lumen\Application as LumenApplication;
+use League\CommonMark\Environment\EnvironmentInterface;
+use GrahamCampbell\Markdown\View\Engine\PhpMarkdownEngine;
+use GrahamCampbell\Markdown\View\Compiler\MarkdownCompiler;
+use GrahamCampbell\Markdown\View\Engine\BladeMarkdownEngine;
+use Illuminate\Foundation\Application as LaravelApplication;
+use GrahamCampbell\Markdown\View\Directive\MarkdownDirective;
+use League\CommonMark\Environment\EnvironmentBuilderInterface;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 
 /**
  * This is the markdown service provider class.
@@ -164,11 +165,11 @@ class MarkdownServiceProvider extends ServiceProvider
     protected function registerEnvironment()
     {
         $this->app->singleton('markdown.environment', function (Container $app) {
-            $environment = Environment::createCommonMarkEnvironment();
 
             $config = $app->config->get('markdown');
 
-            $environment->mergeConfig(Arr::except($config, ['extensions', 'views']));
+            $environment = new Environment(Arr::except($config, ['extensions', 'views']));
+            $environment->addExtension(new CommonMarkCoreExtension);
 
             foreach ((array) Arr::get($config, 'extensions') as $extension) {
                 $environment->addExtension($app->make($extension));
@@ -179,7 +180,7 @@ class MarkdownServiceProvider extends ServiceProvider
 
         $this->app->alias('markdown.environment', Environment::class);
         $this->app->alias('markdown.environment', EnvironmentInterface::class);
-        $this->app->alias('markdown.environment', ConfigurableEnvironmentInterface::class);
+        $this->app->alias('markdown.environment', EnvironmentBuilderInterface::class);
     }
 
     /**
