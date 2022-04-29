@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace GrahamCampbell\Markdown\View\Engine;
 
 use Illuminate\View\Engines\PhpEngine;
-use League\CommonMark\MarkdownConverterInterface;
+use League\CommonMark\ConverterInterface;
 
 /**
  * This is the php markdown engine class.
@@ -35,11 +35,11 @@ final class PhpMarkdownEngine extends PhpEngine
     /**
      * Create a new instance.
      *
-     * @param \League\CommonMark\MarkdownConverterInterface $markdown
+     * @param \League\CommonMark\ConverterInterface $markdown
      *
      * @return void
      */
-    public function __construct(MarkdownConverterInterface $markdown)
+    public function __construct(ConverterInterface $markdown)
     {
         $this->markdown = $markdown;
     }
@@ -62,7 +62,7 @@ final class PhpMarkdownEngine extends PhpEngine
     /**
      * Return the markdown instance.
      *
-     * @return \League\CommonMark\MarkdownConverterInterface
+     * @return \League\CommonMark\ConverterInterface
      */
     public function getMarkdown()
     {

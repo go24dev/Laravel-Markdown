@@ -27,7 +27,7 @@ use League\CommonMark\CommonMarkConverter;
 use League\CommonMark\ConfigurableEnvironmentInterface;
 use League\CommonMark\Environment;
 use League\CommonMark\EnvironmentInterface;
-use League\CommonMark\MarkdownConverterInterface;
+use League\CommonMark\ConverterInterface;
 
 /**
  * This is the markdown service provider class.
@@ -60,7 +60,7 @@ class MarkdownServiceProvider extends ServiceProvider
      */
     protected function setupConfig()
     {
-        $source = realpath($raw = __DIR__.'/../config/markdown.php') ?: $raw;
+        $source = realpath($raw = __DIR__ . '/../config/markdown.php') ?: $raw;
 
         if ($this->app instanceof LaravelApplication && $this->app->runningInConsole()) {
             $this->publishes([$source => config_path('markdown.php')]);
@@ -196,7 +196,7 @@ class MarkdownServiceProvider extends ServiceProvider
         });
 
         $this->app->alias('markdown', CommonMarkConverter::class);
-        $this->app->alias('markdown', MarkdownConverterInterface::class);
+        $this->app->alias('markdown', ConverterInterface::class);
     }
 
     /**

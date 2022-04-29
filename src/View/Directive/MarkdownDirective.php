@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace GrahamCampbell\Markdown\View\Directive;
 
-use League\CommonMark\MarkdownConverterInterface;
+use League\CommonMark\ConverterInterface;
 
 /**
  * This is the markdown directive class.
@@ -32,11 +32,11 @@ final class MarkdownDirective
     /**
      * Create a new markdown directive instance.
      *
-     * @param \League\CommonMark\MarkdownConverterInterface $markdown
+     * @param \League\CommonMark\ConverterInterface $markdown
      *
      * @return void
      */
-    public function __construct(MarkdownConverterInterface $markdown)
+    public function __construct(ConverterInterface $markdown)
     {
         $this->markdown = $markdown;
     }
