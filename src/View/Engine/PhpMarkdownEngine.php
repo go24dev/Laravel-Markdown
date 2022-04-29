@@ -56,7 +56,7 @@ final class PhpMarkdownEngine extends PhpEngine
     {
         $contents = parent::get($path, $data);
 
-        return $this->markdown->convertToHtml($contents);
+        return $this->markdown->convert($contents);
     }
 
     /**

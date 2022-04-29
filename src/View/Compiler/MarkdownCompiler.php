@@ -57,7 +57,7 @@ final class MarkdownCompiler extends Compiler implements CompilerInterface
      */
     public function compile($path)
     {
-        $contents = $this->markdown->convertToHtml($this->files->get($path));
+        $contents = $this->markdown->convert($this->files->get($path));
 
         $this->files->put($this->getCompiledPath($path), $contents);
     }

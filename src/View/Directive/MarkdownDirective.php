@@ -50,7 +50,7 @@ final class MarkdownDirective
      */
     public function render(string $markdown)
     {
-        return $this->markdown->convertToHtml(self::adjust($markdown));
+        return $this->markdown->convert(self::adjust($markdown));
     }
 
     /**

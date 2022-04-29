@@ -132,7 +132,7 @@ class MarkdownServiceProvider extends ServiceProvider
 
         $app['blade.compiler']->directive('markdown', function ($markdown) {
             if ($markdown) {
-                return "<?php echo app('markdown')->convertToHtml((string) {$markdown}); ?>";
+                return "<?php echo app('markdown')->convert((string) {$markdown}); ?>";
             }
 
             return '<?php ob_start(); ?>';
