@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
+use League\CommonMark\Extension\HeadingPermalink\HeadingPermalinkExtension;
+use League\CommonMark\Extension\HeadingPermalink\HeadingPermalinkRenderer;
+use League\CommonMark\Extension\TableOfContents\TableOfContentsExtension;
+
 /*
  * This file is part of Laravel Markdown.
  *
@@ -14,7 +19,7 @@ declare(strict_types=1);
 return [
 
     /*
-    |--------------------------------------------------------------------------
+    |--------------------------------------------\------------------------------
     | Enable View Integration
     |--------------------------------------------------------------------------
     |
@@ -41,7 +46,11 @@ return [
     |
     */
 
-    'extensions' => [],
+    'extensions' => [
+        HeadingPermalinkExtension::class,
+        TableOfContentsExtension::class,
+        GithubFlavoredMarkdownExtension::class
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -64,57 +73,12 @@ return [
         'soft_break'      => "\n",
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Enable Em Tag Parsing
-    |--------------------------------------------------------------------------
-    |
-    | This option specifies if `<em>` parsing is enabled.
-    |
-    | Default: true
-    |
-    */
-
-    'enable_em' => true,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Enable Strong Tag Parsing
-    |--------------------------------------------------------------------------
-    |
-    | This option specifies if `<strong>` parsing is enabled.
-    |
-    | Default: true
-    |
-    */
-
-    'enable_strong' => true,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Enable Asterisk Parsing
-    |--------------------------------------------------------------------------
-    |
-    | This option specifies if `*` should be parsed for emphasis.
-    |
-    | Default: true
-    |
-    */
-
-    'use_asterisk' => true,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Enable Underscore Parsing
-    |--------------------------------------------------------------------------
-    |
-    | This option specifies if `_` should be parsed for emphasis.
-    |
-    | Default: true
-    |
-    */
-
-    'use_underscore' => true,
+    "commonmark" => [
+        'enable_em' => true,
+        'enable_strong' => true,
+        'use_asterisk' => true,
+        'use_underscore' => true,
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -149,10 +113,22 @@ return [
     |
     | This option specifies the maximum permitted block nesting level.
     |
-    | Default: INF
+    | Default: PHP_INT_MAX
     |
     */
 
-    'max_nesting_level' => INF,
+    'max_nesting_level' => PHP_INT_MAX,
+
+    'heading_permalink' => [
+        'html_class' => 'heading-permalink',
+        'id_prefix' => 'content',
+        'fragment_prefix' => 'content',
+        'insert' => 'before',
+        'min_heading_level' => 1,
+        'max_heading_level' => 6,
+        'title' => 'Permalink',
+        'symbol' => HeadingPermalinkRenderer::DEFAULT_SYMBOL,
+        'aria_hidden' => true,
+    ],
 
 ];
