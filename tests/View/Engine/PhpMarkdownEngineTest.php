@@ -15,7 +15,7 @@ namespace GrahamCampbell\Tests\Markdown\View\Engine;
 
 use GrahamCampbell\Markdown\View\Engine\PhpMarkdownEngine;
 use GrahamCampbell\TestBench\AbstractTestCase;
-use League\CommonMark\MarkdownConverterInterface;
+use League\CommonMark\ConverterInterface;
 use Mockery;
 
 /**
@@ -29,7 +29,7 @@ class PhpMarkdownEngineTest extends AbstractTestCase
     {
         $engine = $this->getEngine();
 
-        $engine->getMarkdown()->shouldReceive('convertToHtml')->once()
+        $engine->getMarkdown()->shouldReceive('convert')->once()
             ->with("qwertyuiop\n")->andReturn('html');
 
         $return = $engine->get(__DIR__.'/stubs/test');
@@ -39,7 +39,7 @@ class PhpMarkdownEngineTest extends AbstractTestCase
 
     protected function getEngine()
     {
-        $markdown = Mockery::mock(MarkdownConverterInterface::class);
+        $markdown = Mockery::mock(ConverterInterface::class);
 
         return new PhpMarkdownEngine($markdown);
     }

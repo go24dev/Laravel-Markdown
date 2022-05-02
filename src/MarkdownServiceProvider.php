@@ -15,8 +15,8 @@ namespace GrahamCampbell\Markdown;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
+use League\CommonMark\MarkdownConverter;
 use League\CommonMark\ConverterInterface;
-use League\CommonMark\CommonMarkConverter;
 use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\Contracts\Container\Container;
 use League\CommonMark\Environment\Environment;
@@ -27,8 +27,8 @@ use GrahamCampbell\Markdown\View\Compiler\MarkdownCompiler;
 use GrahamCampbell\Markdown\View\Engine\BladeMarkdownEngine;
 use Illuminate\Foundation\Application as LaravelApplication;
 use GrahamCampbell\Markdown\View\Directive\MarkdownDirective;
-use League\CommonMark\Environment\EnvironmentBuilderInterface;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\Environment\EnvironmentBuilderInterface;
 
 /**
  * This is the markdown service provider class.
@@ -83,7 +83,6 @@ class MarkdownServiceProvider extends ServiceProvider
 
         $app->view->getEngineResolver()->register('md', function () use ($app) {
             $compiler = $app['markdown.compiler'];
-
             return new CompilerEngine($compiler);
         });
 
@@ -168,8 +167,7 @@ class MarkdownServiceProvider extends ServiceProvider
 
             $config = $app->config->get('markdown');
 
-            $environment = new Environment(Arr::except($config, ['extensions', 'views']));
-            $environment->addExtension(new CommonMarkCoreExtension);
+            $environment = (new Environment)->addExtension(new CommonMarkCoreExtension);
 
             foreach ((array) Arr::get($config, 'extensions') as $extension) {
                 $environment->addExtension($app->make($extension));
@@ -193,10 +191,13 @@ class MarkdownServiceProvider extends ServiceProvider
         $this->app->singleton('markdown', function (Container $app) {
             $environment = $app['markdown.environment'];
 
-            return new CommonMarkConverter([], $environment);
+            $config = $app->config->get('markdown');
+
+            return new MarkdownConverter($environment);
         });
 
-        $this->app->alias('markdown', CommonMarkConverter::class);
+
+        $this->app->alias('markdown', MarkdownConverter::class);
         $this->app->alias('markdown', ConverterInterface::class);
     }
 
@@ -227,7 +228,6 @@ class MarkdownServiceProvider extends ServiceProvider
     {
         $this->app->singleton('markdown.directive', function (Container $app) {
             $markdown = $app['markdown'];
-
             return new MarkdownDirective($markdown);
         });
 

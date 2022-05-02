@@ -13,12 +13,13 @@ declare(strict_types=1);
 
 namespace GrahamCampbell\Tests\Markdown\View\Compiler;
 
-use GrahamCampbell\Markdown\View\Compiler\MarkdownCompiler;
-use GrahamCampbell\TestBench\AbstractTestCase;
+use Mockery;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Application;
-use League\CommonMark\MarkdownConverterInterface;
-use Mockery;
+use League\CommonMark\ConverterInterface;
+use GrahamCampbell\TestBench\AbstractTestCase;
+use League\CommonMark\Output\RenderedContentInterface;
+use GrahamCampbell\Markdown\View\Compiler\MarkdownCompiler;
 
 /**
  * This is the markdown compiler test class.
@@ -34,8 +35,8 @@ class MarkdownCompilerTest extends AbstractTestCase
         $compiler->getFiles()->shouldReceive('get')->once()
             ->with('path')->andReturn('markdown');
 
-        $compiler->getMarkdown()->shouldReceive('convertToHtml')->once()
-            ->with('markdown')->andReturn('html');
+        $compiler->getMarkdown()->shouldReceive('convert')->once()
+            ->with('markdown')->andReturn(Mockery::mock(RenderedContentInterface::class));
 
         if (substr(Application::VERSION, 0, 3) === '5.1') {
             $file = 'd6fe1d0be6347b8ef2427fa629c04485';
@@ -44,14 +45,14 @@ class MarkdownCompilerTest extends AbstractTestCase
         }
 
         $compiler->getFiles()->shouldReceive('put')->once()
-            ->with(__DIR__.'/'.$file, 'html');
+            ->with(__DIR__ . '/' . $file, 'html');
 
         $this->assertNull($compiler->compile('path'));
     }
 
     protected function getCompiler()
     {
-        $markdown = Mockery::mock(MarkdownConverterInterface::class);
+        $markdown = Mockery::mock(ConverterInterface::class);
         $files = Mockery::mock(Filesystem::class);
         $cachePath = __DIR__;
 

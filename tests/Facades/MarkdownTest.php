@@ -17,7 +17,7 @@ use GrahamCampbell\Markdown\Facades\Markdown;
 use GrahamCampbell\TestBenchCore\FacadeTrait;
 use GrahamCampbell\Tests\Markdown\AbstractTestCase;
 use League\CommonMark\Extension\SmartPunct\SmartPunctExtension;
-use League\CommonMark\MarkdownConverterInterface;
+use League\CommonMark\ConverterInterface;
 
 /**
  * This is the markdown facade test class.
@@ -55,12 +55,12 @@ class MarkdownTest extends AbstractTestCase
      */
     protected function getFacadeRoot()
     {
-        return MarkdownConverterInterface::class;
+        return ConverterInterface::class;
     }
 
-    public function testConvertToHtml()
+    public function testconvert()
     {
-        $result = Markdown::convertToHtml('foo');
+        $result = Markdown::convert('foo');
 
         $this->assertSame("<p>foo</p>\n", $result);
     }
@@ -69,7 +69,7 @@ class MarkdownTest extends AbstractTestCase
     {
         $this->app->config->set('markdown.allow_unsafe_links', false);
 
-        $result = Markdown::convertToHtml("[Click me](javascript:alert('XSS'))");
+        $result = Markdown::convert("[Click me](javascript:alert('XSS'))");
 
         $this->assertSame("<p><a>Click me</a></p>\n", $result);
     }
@@ -78,8 +78,8 @@ class MarkdownTest extends AbstractTestCase
     {
         $this->app->config->set('markdown.extensions', [SmartPunctExtension::class]);
 
-        $result = Markdown::convertToHtml("'A', 'B', and 'C' are letters.");
+        $result = Markdown::convert("'A', 'B', and 'C' are letters.");
 
-        $this->assertSame("<p>‘A’, ‘B’, and ‘C’ are letters.</p>\n", $result);
+        $this->assertSame("<p>'A', 'B', and 'C' are letters.</p>\n", $result);
     }
 }
