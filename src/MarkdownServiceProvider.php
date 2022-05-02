@@ -167,9 +167,11 @@ class MarkdownServiceProvider extends ServiceProvider
 
             $config = $app->config->get('markdown');
 
-            $environment = (new Environment)->addExtension(new CommonMarkCoreExtension);
+            $environment = (new Environment(
+                Arr::except($config, ['views', 'extensions'])
+            ))->addExtension(new CommonMarkCoreExtension);
 
-            foreach ((array) Arr::get($config, 'extensions') as $extension) {
+            foreach (Arr::get($config, 'extensions') as $extension) {
                 $environment->addExtension($app->make($extension));
             }
 
@@ -190,8 +192,6 @@ class MarkdownServiceProvider extends ServiceProvider
     {
         $this->app->singleton('markdown', function (Container $app) {
             $environment = $app['markdown.environment'];
-
-            $config = $app->config->get('markdown');
 
             return new MarkdownConverter($environment);
         });
